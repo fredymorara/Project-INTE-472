@@ -34,6 +34,7 @@ def initialize_project():
 def create_records_file(folder_path):
     """Create a new records file with student names."""
     print("\n--- Task 2: Creating and Writing to File ---")
+    file_name = "" # Define file_name here to be accessible in except block
     try:
         # a) Generate file name with current date
         current_date = datetime.now().strftime("%Y-%m-%d")
@@ -56,14 +57,27 @@ def create_records_file(folder_path):
             f"\nSuccess: File '{file_name}' created in 'StudentFiles' at {creation_time}."
         )
 
-        # Log the activity
-        log_activity(folder_path, file_name)
+        # --- THIS IS WHERE PERSON 2's CODE WILL GO (Task 4) ---
+        # (e.g., backup_and_archive(folder_path, file_path, file_name))
+        # --------------------------------------------------------
+
+
+        # Log the activity (Task 5)
+        # This log message assumes Person 2 has added the backup/archive code above.
+        # This correctly logs "created and archived" as required[cite: 46].
+        log_activity(folder_path, file_name, action="created and archived")
 
     except IOError as e:
-        print(f"Error: Failed to write to file. Reason: {e}")
+        error_message = f"Failed to write to file '{file_name}'. Reason: {e}"
+        print(f"Error: {error_message}")
+        # --- ADD THIS LINE (Task 5c) ---
+        log_activity(folder_path, file_name if file_name else "unknown_file", action=f"Error - {error_message}")
         print("Returning to main menu...")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        error_message = f"An unexpected error occurred. Reason: {e}"
+        print(error_message)
+        # --- ADD THIS LINE (Task 5c) ---
+        log_activity(folder_path, "system", action=f"Error - {error_message}")
         print("Returning to main menu...")
 
 

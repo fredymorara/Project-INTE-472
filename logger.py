@@ -67,8 +67,16 @@ def read_log(folder_path):
         return contents
 
     except IOError as e:
-        print(f"Error: Failed to read log file. Reason: {e}")
+        # --- ADD THESE LINES (Task 5c) ---
+        error_message = f"Failed to read log file. Reason: {e}"
+        print(f"Error: {error_message}")
+        # Can't log to the file if we can't read it, but we print.
         return None
+        
     except Exception as e:
-        print(f"An unexpected error occurred while reading log: {e}")
+        # --- ADD THESE LINES (Task 5c) ---
+        error_message = f"An unexpected error occurred while reading log: {e}"
+        print(f"An unexpected error occurred: {e}")
+        # Try to log this, though it might fail if it's an IOError
+        log_activity(folder_path, "activity_log.txt", action=f"Error - {error_message}")
         return None

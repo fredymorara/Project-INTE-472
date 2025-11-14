@@ -37,7 +37,10 @@ def delete_file_prompt(folder_path):
             for idx, file in enumerate(files, 1):
                 print(f"{idx}. {file}")
         except OSError as e:
-            print(f"Error: Unable to list files. Reason: {e}")
+            error_message = f"Unable to list files. Reason: {e}"
+            print(f"Error: {error_message}")
+            # --- ADD THIS LINE (Task 5c) ---
+            log_activity(folder_path, "system", action=f"Error - {error_message}")
             return False
 
         # Ask for file name
@@ -64,10 +67,10 @@ def delete_file_prompt(folder_path):
             os.remove(file_path)
             print(f"\nSuccess: File '{file_name}' has been deleted.")
 
-            # c) Log the deletion event in activity_log.txt with a timestamp
+            # c) Log the deletion event [cite: 53]
             log_activity(folder_path, file_name, action="deleted")
 
-            # d) Display all remaining files in the folder using os.listdir()
+            # d) Display all remaining files [cite: 54]
             print("\n--- Remaining Files in StudentFiles Folder ---")
             remaining_files = os.listdir(folder_path)
             if remaining_files:
@@ -79,10 +82,16 @@ def delete_file_prompt(folder_path):
             return True
 
         except OSError as e:
-            print(f"Error: Failed to delete file '{file_name}'. Reason: {e}")
+            error_message = f"Failed to delete file '{file_name}'. Reason: {e}"
+            print(f"Error: {error_message}")
+            # --- ADD THIS LINE (Task 5c) ---
+            log_activity(folder_path, file_name, action=f"Error - {error_message}")
             return False
         except Exception as e:
+            error_message = f"An unexpected error occurred. Reason: {e}"
             print(f"An unexpected error occurred: {e}")
+            # --- ADD THIS LINE (Task 5c) ---
+            log_activity(folder_path, file_name, action=f"Error - {error_message}")
             return False
     else:
         print("File deletion skipped.")
@@ -116,26 +125,33 @@ def delete_specific_file(folder_path, file_name):
         return True
 
     except OSError as e:
-        print(f"Error: Failed to delete file '{file_name}'. Reason: {e}")
+        # --- ADD THESE LINES (Task 5c) ---
+        error_message = f"Failed to delete file '{file_name}'. Reason: {e}"
+        print(f"Error: {error_message}")
+        log_activity(folder_path, file_name, action=f"Error - {error_message}")
         return False
+        
     except Exception as e:
+        # --- ADD THESE LINES (Task 5c) ---
+        error_message = f"An unexpected error occurred. Reason: {e}"
         print(f"An unexpected error occurred: {e}")
+        log_activity(folder_path, file_name, action=f"Error - {error_message}")
         return False
 
 
 def list_files(folder_path):
     """
     List all files in the StudentFiles folder.
-
-    Args:
-        folder_path (str): The path to the StudentFiles folder
-
-    Returns:
-        list: List of file names in the folder
+    ...
     """
     try:
         files = os.listdir(folder_path)
         return files
     except OSError as e:
-        print(f"Error: Unable to list files. Reason: {e}")
+        error_message = f"Unable to list files. Reason: {e}"
+        print(f"Error: {error_message}")
+        # --- ADD THIS LINE (Task 5c) ---
+        # Note: We can't log if the folder_path itself is the problem,
+        # but we try anyway.
+        log_activity(folder_path, "system", action=f"Error - {error_message}")
         return []
