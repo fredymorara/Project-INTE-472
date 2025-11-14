@@ -76,7 +76,6 @@ This project utilizes the following standard Python modules as required:
 ## 👥 Team Members
 
 This project was a collaborative effort by the following team members.
-*(As required for Moodle submission )*
 
 | Name | Registration Number | GitHub Profile |
 | :--- | :--- | :--- |
