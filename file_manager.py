@@ -26,7 +26,7 @@ except OSError as e:
     sys.exit("Program terminated due to folder creation failure.") # 
 
 
-# --- TASK 2: File Creation and Writing [cite: 26] ---
+# --- TASK 2: File Creation and Writing  ---
 print("\n--- Task 2: Creating and Writing to File ---")
 try:
     # a) Generate file name with current date 
@@ -50,7 +50,7 @@ try:
 
 except IOError as e:
     print(f"Error: Failed to write to file '{file_name}'. Reason: {e}")
-    # Note: Person 3 will be responsible for logging this error [cite: 49]
+    # Note: Person 3 will be responsible for logging this error
     sys.exit("Program terminated due to file writing failure.")
 except Exception as e:
     print(f"An unexpected error occurred: {e}")
