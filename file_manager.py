@@ -1,6 +1,7 @@
 import os
 import sys
 from datetime import datetime
+import shutil  # <-- ADD THIS LINE
 from logger import log_activity, read_log
 from delete_file import delete_file_prompt, list_files
 
@@ -58,13 +59,14 @@ def create_records_file(folder_path):
         )
 
         # --- THIS IS WHERE PERSON 2's CODE WILL GO (Task 4) ---
-        # (e.g., backup_and_archive(folder_path, file_path, file_name))
-        # --------------------------------------------------------
-
+        # --- (e.g., backup_and_archive(folder_path, file_path, file_name)) ---
+        
+        # --- ADD THIS LINE (Task 4) ---
+        backup_and_archive(folder_path, file_path, file_name)
+        # ---------------------------------
 
         # Log the activity (Task 5)
-        # This log message assumes Person 2 has added the backup/archive code above.
-        # This correctly logs "created and archived" as required[cite: 46].
+        # This log message is now accurate.
         log_activity(folder_path, file_name, action="created and archived")
 
     except IOError as e:
@@ -81,6 +83,53 @@ def create_records_file(folder_path):
         print("Returning to main menu...")
 
 
+def backup_and_archive(folder_path, file_path, file_name):
+    """
+    Create a backup and move it to the Archive folder (Task 4).
+    
+    Args:
+        folder_path (str): Path to StudentFiles
+        file_path (str): Full path to the original file
+        file_name (str): Name of the original file
+    """
+    print(f"--- Task 4: Backing up '{file_name}' ---")
+    try:
+        # b) Create Archive subfolder if it doesn't exist
+        archive_folder_path = os.path.join(folder_path, "Archive")
+        if not os.path.exists(archive_folder_path):
+            os.makedirs(archive_folder_path)
+            print(f"Subfolder 'Archive' created.")
+
+        # a) Create backup copy name and path
+        backup_file_name = f"backup_{file_name}"
+        backup_file_path = os.path.join(folder_path, backup_file_name)
+        
+        # Create the copy
+        shutil.copy(file_path, backup_file_path)
+        print(f"Backup copy '{backup_file_name}' created.")
+
+        # c) Move backup file into Archive folder
+        # shutil.move() can overwrite. We'll move to the full destination path.
+        final_backup_path = os.path.join(archive_folder_path, backup_file_name)
+        shutil.move(backup_file_path, final_backup_path)
+        print(f"Backup moved to 'Archive' folder.")
+
+        # d) List all files in the Archive folder
+        print("\nFiles now in Archive folder:")
+        archive_files = os.listdir(archive_folder_path)
+        if not archive_files:
+            print("Archive folder is empty.")
+        else:
+            for file in archive_files:
+                print(f"- {file}")
+
+    except (shutil.Error, OSError) as e:
+        error_message = f"Backup/Archive failed for '{file_name}'. Reason: {e}"
+        print(f"Error: {error_message}")
+        # Log this error (Task 5c)
+        log_activity(folder_path, file_name, action=f"Error - {error_message}")
+
+
 def view_files(folder_path):
     """View all files in the StudentFiles folder."""
     print("\n--- View Files ---")
@@ -92,8 +141,58 @@ def view_files(folder_path):
         print(f"\nFiles in StudentFiles folder ({len(files)} total):")
         for idx, file in enumerate(files, 1):
             file_path = os.path.join(folder_path, file)
+            
+            # Task 3b: Get file size
             file_size = os.path.getsize(file_path)
-            print(f"{idx}. {file} ({file_size} bytes)")
+            
+            # --- START: Added code for Task 3c ---
+            mod_time_stamp = os.path.getmtime(file_path)
+            mod_time = datetime.fromtimestamp(mod_time_stamp).strftime('%Y-%m-%d %H:%M:%S')
+            
+            print(f"{idx}. {file} ({file_size} bytes, Last Modified: {mod_time})")
+            # --- END: Added code for Task 3c ---
+
+
+def view_file_contents(folder_path):
+    """Read and display the contents of a specific file (Task 3a)."""
+    print("\n--- View File Contents ---")
+    files = list_files(folder_path)
+
+    if not files:
+        print("No files found in the StudentFiles folder.")
+        return
+
+    print("Which file would you like to view?")
+    for idx, file in enumerate(files, 1):
+        print(f"{idx}. {file}")
+    
+    try:
+        # Ask user for a number
+        choice_str = input(f"Enter file number (1-{len(files)}): ").strip()
+        
+        if not choice_str.isdigit():
+            print("Invalid input. Please enter a number.")
+            return
+
+        choice = int(choice_str)
+        if not 1 <= choice <= len(files):
+            print("Invalid choice. Number out of range.")
+            return
+            
+        file_name = files[choice - 1]
+        file_path = os.path.join(folder_path, file_name)
+
+        print(f"\n--- Contents of {file_name} ---")
+        with open(file_path, "r") as f:
+            print(f.read())
+        print("--- End of File ---")
+
+    except (ValueError, IndexError):
+        print("Invalid input. Please enter a number from the list.")
+    except IOError as e:
+        error_message = f"Failed to read file '{file_name}'. Reason: {e}"
+        print(f"Error: {error_message}")
+        log_activity(folder_path, file_name, action=f"Error - {error_message}")
 
 
 def view_activity_log(folder_path):
@@ -116,7 +215,8 @@ def display_menu():
     print("2. Delete a file")
     print("3. View all files")
     print("4. View activity log")
-    print("5. Exit")
+    print("5. View file contents") # <-- ADDED THIS OPTION
+    print("6. Exit")               # <-- CHANGED 5 to 6
     print("=" * 60)
 
 
@@ -129,7 +229,7 @@ def main():
     # Main menu loop
     while True:
         display_menu()
-        choice = input("\nEnter your choice (1-5): ").strip()
+        choice = input("\nEnter your choice (1-6): ").strip() # <-- CHANGED 1-5 to 1-6
 
         if choice == "1":
             create_records_file(folder_path)
@@ -143,14 +243,19 @@ def main():
         elif choice == "4":
             view_activity_log(folder_path)
 
+        # --- ADD THIS ELIF BLOCK ---
         elif choice == "5":
+            view_file_contents(folder_path)
+        # ---------------------------
+
+        elif choice == "6": # <-- CHANGED 5 to 6
             # extra
             print("\nThank you for using Student Files Management System!")
             print("Goodbye!")
             sys.exit(0)
 
         else:
-            print("\nInvalid choice! Please enter a number between 1 and 5.")
+            print("\nInvalid choice! Please enter a number between 1 and 6.") # <-- CHANGED 1-5 to 1-6
 
 
 # Run the main program

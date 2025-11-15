@@ -79,7 +79,7 @@ This project was a collaborative effort by the following team members.
 
 | Name | Registration Number | GitHub Profile |
 | :--- | :--- | :--- |
-| Cleophas Kiama | INTE/MG/2834/09/22 | [@CleoKiama](https://github.com/CleoKiama) |
-| Morris Mwangi | INTE/MG/----/09/22 | [Link to GitHub 3] |
-| David Koroso | INTE/MG/----/09/22 | [Link to GitHub 3] |
-| Fredrick M. Morara | INTE/MG/2814/09/22 | [@fredymorara](https://github.com/fredymorara) |
+| Cleophas Kiama | INTE/MG/2834/09/22 | [CleoKiama](https://github.com/CleoKiama) |
+| Morris Mwangi | INTE/MG/----/09/22 | [MorrisMaldrine](https://github.com/MorrisMaldrine) |
+| David Koroso | INTE/MG/2991/09/22 | [2003-cage](https://github.com/2003-cage) |
+| Fredrick M. Morara | INTE/MG/2814/09/22 | [fredymorara](https://github.com/fredymorara) |
